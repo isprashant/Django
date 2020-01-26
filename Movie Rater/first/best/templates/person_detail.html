@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    {{object.first_name}}
+    {{object.last_name}}
+{% endblock title %}
+    
+
+{% block main %}
+    <h1>{{object}}</h1>
+    <h2>Actor</h2>
+    <ul>
+        
+        {% for role in object.role_set.all %}
+            <li>
+                <a href="{% url 'best:moviedetail' role.movie.id %}">
+                    {{role.movie}}
+                </a>:
+                {{role.name}}
+            </li>
+        {% endfor %}
+    </ul>
+    <h2>Writer</h2>
+    <ul>
+        
+        {% for movie in object.writing_credits.all %}
+            <li>
+                <a href="{% url 'best:moviedetail' movie.id %}">
+                    {{movie}}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <h2>Director</h2>
+    <ul>
+        
+        {% for movie in object.directed.all %}
+        <li>
+            <a href="{% url 'best:moviedetail' movie.id %}">
+                {{movie}}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock main %}
+
+{block sidebar}
+{# rating div omitted #}
+<div>
+    {% if vote_form %}
+    <form method="POST" action="{{vote_form_url}}" >
+        {% csrf_token %}
+        {{vote_form.as_p}}
+        <button class="btn btn-primary">Vote</button>
+    </form>
+    {% else %}
+    <p>Log in to vote for this movie</p>
+    {% endif %}
+</div>
+{ endblock sidebar}

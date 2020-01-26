@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{object.title}} - {{ block.super }}
+{% endblock title %}
+
+{% block main %}
+  <!-- Page Content -->
+  <div class="container">
+      <!-- /.col-lg-3 -->
+      <div class="row">
+
+      <div class="col-lg-9">
+
+        <div class="panel panel-warning">
+            <h3 class="panel-heading">{{object}}</h3>
+            <img style="max-width:100%;height:auto;width:100%;border-top-left-radius:calc(.25rem - 1px);border-top-right-radius:calc(.25rem - 1px)" 
+            src="{{object.cover.url}}" alt="Brand">
+            <div class="panel-body">
+            <!-- <h4>$24.99</h4> -->
+            <p class="panel-body" style="font-size: 17px;">{{object.plot}}</p>
+            <p class="panel-heading" style="font-size: 17px;"><b>BoomScore:</b> {{object.score|default_if_none:"TBD"}}</p>
+          </div>
+          <p class="panel-body">Images Uploaded by Users:</p>
+          <ul class="movie-image list-inline">
+            {% for i in object.movieimage_set.all %}
+              <li class="list-inline-item">
+                <img src="{{ i.image.url }}">
+              </li>
+            {% endfor %}
+              </ul>
+        </div>
+        <!-- /.card -->
+        <div> 
+          <div style="padding:.75rem 1.25rem;margin-bottom:0;background-color:rgba(0,0,0,.03);border-bottom:1px solid rgba(0,0,0,.125);">
+            <b class="panel-heading">Crew/Cast</b>
+          </div>
+          <div class="panel-body" style="ms-flex:1 1 auto;flex:1 1 auto;">
+            <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
+            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
+            <hr>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
+            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
+            <hr>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
+            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
+            <hr> -->
+            <p>
+        <b>Directed by:</b>{{object.director}}<br>
+        <b>Actors:</b> {% for area in object.actors.all %}{{ area }}<br/>{% endfor %}
+        <b>Writers:</b> {% for area in object.writers.all %}{{ area }}<br/>{% endfor %}
+          </p>
+          <p>{{object.random}}</p>
+            <hr>
+            <!-- <a href="#" class="btn btn-success">Leave a Review</a> -->
+          </div>
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col-lg-9 -->
+  <!-- /.container -->
+    {% endblock %}
+  
+{% block sidebar %}
+<div class="panel panel-warning">
+  <p class="panel-heading">This movie is Rated as</p>
+  <div class="panel-body" style="font-size: 17px; ">
+    <span class="label label-warning">
+        {{ object.get_rating_display }}
+    </span>
+  </div>
+{% if image_form %}
+<div class="panel panel-warning">
+  <p class="panel-heading">Upload Movie Images</p>
+  <div class="panel-body">
+  <form method="POST"
+        enctype="multipart/form-data"
+          action="{% url 'best:movie-image-upload' movie_id=object.id %}">
+          {% csrf_token %}
+          {% for i in image_form %}
+          {{i}}
+          {% endfor %}
+          <p>
+            <button class="btn btn-warning" style="margin-top: 10px;">
+              Upload
+            </button>
+          </p>
+        </form>
+      </div>
+      </div>
+{% endif %}
+<div class="panel panel-warning">
+<p class="panel-heading">Vote</p>
+<div class="panel-body">
+    {% if vote_form %}
+    <form method="POST" action="{{vote_form_url}}" >
+        {% csrf_token %}
+        {% for i in vote_form %}
+        {{i}}
+        {% endfor %}
+        <button class="btn btn-warning">Vote</button>
+    </form>
+    {% else %}
+    <p>Log in to vote for this movie</p>
+    {% endif %}
+</div>
+</div>
+</div>
+</div>
+</div>
+    {% endblock %}
+
+
